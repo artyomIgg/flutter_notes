@@ -56,7 +56,6 @@ class _EditNotesPageState extends State<EditNotesPage>
   TextEditingController contentController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
-    // currentDate = isCheckedDate;
     if (widget.title != null && widget.content != null && stop > 0) {
       titleController.text = widget.title!;
       contentController.text = widget.content!;
@@ -110,32 +109,6 @@ class _EditNotesPageState extends State<EditNotesPage>
                           } else {
                             newData = chechEditNote();
                           }
-                          // if (isCheckedDate) {
-                          //   var now = new DateTime.now();
-                          //   var formatter = new DateFormat('yyyy/MM/dd');
-                          //   widget.date = formatter.format(now);
-                          //   changeDate = !changeDate;
-                          //   if (changeDate = false) {
-                          //     widget.date = null;
-                          //   }
-                          //   if (value == false) widget.date = null;
-                          //   if ((titleController.text.isNotEmpty &&
-                          //               contentController.text.isNotEmpty) &&
-                          //           (titleController.text != widget.title ||
-                          //               contentController.text !=
-                          //                   widget.content) ||
-                          //       checkDate2 == isCheckedDate) {
-                          //     controller.forward();
-                          //     newData = false;
-                          //   } else {
-                          //     controller.reverse();
-                          //     newData = true;
-                          //   }
-                          // } else if (!newNote) {
-                          //   // changeDate = !changeDate;
-                          //   controller.reverse();
-                          //   newData = true;
-                          // }
                         });
                       },
                     ),
@@ -171,19 +144,6 @@ class _EditNotesPageState extends State<EditNotesPage>
                               newNote
                                   ? newData = checkNewNote()
                                   : newData = chechEditNote();
-
-                              // if ((titleController.text.isNotEmpty &&
-                              //             contentController.text.isNotEmpty) &&
-                              //         (titleController.text != widget.title ||
-                              //             contentController.text !=
-                              //                 widget.content) ||
-                              //     changeDate) {
-                              //   controller.reverse();
-                              //   newData = true;
-                              // } else {
-                              //   controller.forward();
-                              //   newData = false;
-                              // }
                             });
                           },
                         ),
@@ -213,19 +173,6 @@ class _EditNotesPageState extends State<EditNotesPage>
                                 newNote
                                     ? newData = checkNewNote()
                                     : newData = chechEditNote();
-                                // if ((titleController.text.isNotEmpty &&
-                                //             contentController
-                                //                 .text.isNotEmpty) &&
-                                //         (titleController.text != widget.title ||
-                                //             contentController.text !=
-                                //                 widget.content) ||
-                                //     changeDate) {
-                                //   controller.reverse();
-                                //   newData = true;
-                                // } else {
-                                //   controller.forward();
-                                //   newData = false;
-                                // }
                               });
                             },
                           ),
@@ -374,7 +321,6 @@ class _EditNotesPageState extends State<EditNotesPage>
             (titleController.text != widget.title ||
                 contentController.text != widget.content) ||
         currentDate != isCheckedDate) {
-      // if()
       result = true;
       controller.reverse();
     } else
