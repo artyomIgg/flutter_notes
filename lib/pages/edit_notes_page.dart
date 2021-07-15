@@ -47,23 +47,29 @@ class _EditNotesPageState extends State<EditNotesPage>
 
   bool newNote = false;
   bool isCheckedDate = false;
+  bool currentDate = false;
   bool changeDate = false;
   bool savedChanges = false;
+  bool newData = false;
   int stop = 1;
   TextEditingController titleController = new TextEditingController();
   TextEditingController contentController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
+    // currentDate = isCheckedDate;
     if (widget.title != null && widget.content != null && stop > 0) {
       titleController.text = widget.title!;
       contentController.text = widget.content!;
       if (widget.date != null) {
         isCheckedDate = true;
+        currentDate = true;
       }
       controller.forward();
+      newData = false;
       stop--;
     } else if (stop > 0 && widget.title == null && widget.content == null) {
       controller.forward();
+      newData = false;
       newNote = true;
       stop--;
     }
@@ -73,13 +79,9 @@ class _EditNotesPageState extends State<EditNotesPage>
         onWillPop: (() {
           if (savedChanges) {
             Navigator.pop(context);
-          } else if (widget.index == null) {
+          } else if (widget.index == null && !newData) {
             Navigator.pop(context);
-          } else if ((contentController.text.isNotEmpty &&
-                      contentController.text.isNotEmpty) &&
-                  (titleController.text != widget.title ||
-                      contentController.text != widget.content) ||
-              changeDate) {
+          } else if (newData) {
             _openCustomDialog();
           } else
             Navigator.pop(context);
@@ -92,9 +94,7 @@ class _EditNotesPageState extends State<EditNotesPage>
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                newNote
-                ? Text('New note')
-                : Text('Edit Note'),
+                newNote ? Text('New note') : Text('Edit Note'),
                 Row(
                   children: [
                     Text('Date:'),
@@ -104,22 +104,38 @@ class _EditNotesPageState extends State<EditNotesPage>
                         setState(() {
                           isCheckedDate = value!;
                           if (isCheckedDate) {
-                            var now = new DateTime.now();
-                            var formatter = new DateFormat('yyyy/MM/dd');
-                            widget.date = formatter.format(now);
-                            changeDate = !changeDate;
-                            if (value) widget.date = null;
-                            if ((contentController.text.isNotEmpty &&
-                                        contentController.text.isNotEmpty) &&
-                                    (titleController.text != widget.title ||
-                                        contentController.text !=
-                                            widget.content) ||
-                                !value) {
-                              controller.reverse();
-                            } else {
-                              controller.forward();
-                            }
+                            newNote
+                                ? checkNewNote()
+                                : newData = chechEditNote();
+                          } else {
+                            newData = chechEditNote();
                           }
+                          // if (isCheckedDate) {
+                          //   var now = new DateTime.now();
+                          //   var formatter = new DateFormat('yyyy/MM/dd');
+                          //   widget.date = formatter.format(now);
+                          //   changeDate = !changeDate;
+                          //   if (changeDate = false) {
+                          //     widget.date = null;
+                          //   }
+                          //   if (value == false) widget.date = null;
+                          //   if ((titleController.text.isNotEmpty &&
+                          //               contentController.text.isNotEmpty) &&
+                          //           (titleController.text != widget.title ||
+                          //               contentController.text !=
+                          //                   widget.content) ||
+                          //       checkDate2 == isCheckedDate) {
+                          //     controller.forward();
+                          //     newData = false;
+                          //   } else {
+                          //     controller.reverse();
+                          //     newData = true;
+                          //   }
+                          // } else if (!newNote) {
+                          //   // changeDate = !changeDate;
+                          //   controller.reverse();
+                          //   newData = true;
+                          // }
                         });
                       },
                     ),
@@ -152,16 +168,22 @@ class _EditNotesPageState extends State<EditNotesPage>
                           ),
                           onChanged: (value) {
                             setState(() {
-                              if ((contentController.text.isNotEmpty &&
-                                          contentController.text.isNotEmpty) &&
-                                      (titleController.text != widget.title ||
-                                          contentController.text !=
-                                              widget.content) ||
-                                  changeDate) {
-                                controller.reverse();
-                              } else {
-                                controller.forward();
-                              }
+                              newNote
+                                  ? newData = checkNewNote()
+                                  : newData = chechEditNote();
+
+                              // if ((titleController.text.isNotEmpty &&
+                              //             contentController.text.isNotEmpty) &&
+                              //         (titleController.text != widget.title ||
+                              //             contentController.text !=
+                              //                 widget.content) ||
+                              //     changeDate) {
+                              //   controller.reverse();
+                              //   newData = true;
+                              // } else {
+                              //   controller.forward();
+                              //   newData = false;
+                              // }
                             });
                           },
                         ),
@@ -188,16 +210,22 @@ class _EditNotesPageState extends State<EditNotesPage>
                             maxLines: null,
                             onChanged: (value) {
                               setState(() {
-                                if ((contentController.text.isNotEmpty &&
-                                            contentController.text.isNotEmpty) &&
-                                        (titleController.text != widget.title ||
-                                            contentController.text !=
-                                                widget.content) ||
-                                    changeDate) {
-                                  controller.reverse();
-                                } else {
-                                  controller.forward();
-                                }
+                                newNote
+                                    ? newData = checkNewNote()
+                                    : newData = chechEditNote();
+                                // if ((titleController.text.isNotEmpty &&
+                                //             contentController
+                                //                 .text.isNotEmpty) &&
+                                //         (titleController.text != widget.title ||
+                                //             contentController.text !=
+                                //                 widget.content) ||
+                                //     changeDate) {
+                                //   controller.reverse();
+                                //   newData = true;
+                                // } else {
+                                //   controller.forward();
+                                //   newData = false;
+                                // }
                               });
                             },
                           ),
@@ -319,5 +347,53 @@ class _EditNotesPageState extends State<EditNotesPage>
         pageBuilder: (context, animation1, animation2) {
           return Align();
         });
+  }
+
+  bool checkNewNote() {
+    var now = new DateTime.now();
+    var formatter = new DateFormat('yyyy/MM/dd');
+    widget.date = formatter.format(now);
+    bool result = false;
+    if ((titleController.text.isNotEmpty &&
+        contentController.text.isNotEmpty)) {
+      result = true;
+      controller.reverse();
+    } else
+      controller.forward();
+    setDate();
+    return result;
+  }
+
+  bool chechEditNote() {
+    var now = new DateTime.now();
+    var formatter = new DateFormat('yyyy/MM/dd');
+    widget.date = formatter.format(now);
+    bool result = false;
+    if ((titleController.text.isNotEmpty &&
+                contentController.text.isNotEmpty) &&
+            (titleController.text != widget.title ||
+                contentController.text != widget.content) ||
+        currentDate != isCheckedDate) {
+      // if()
+      result = true;
+      controller.reverse();
+    } else
+      controller.forward();
+    if ((titleController.text.isEmpty ||
+        contentController.text.isEmpty)) {
+      result = false;
+      controller.forward();
+    }
+    setDate();
+    return result;
+  }
+
+  void setDate() {
+    if (isCheckedDate) {
+      var now = new DateTime.now();
+      var formatter = new DateFormat('yyyy/MM/dd');
+      widget.date = formatter.format(now);
+    } else
+      widget.date = null;
   }
 }

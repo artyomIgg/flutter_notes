@@ -86,7 +86,7 @@ class _MainAppBarState extends State<MainAppBar> {
 
   Future<File> get _localFile async {
     final path = await _localPath;
-    return File('$path/stateApp.json');
+    return File('$path/stateApp.json').create();
   }
 
   Future<String> get _localPath async {
