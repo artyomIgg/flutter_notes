@@ -3,7 +3,7 @@ import 'package:flutter_notes/pages/edit_notes_page.dart';
 import 'package:flutter_notes/widgets/main_appBar.dart';
 import 'package:flutter_notes/widgets/notes_widget.dart';
 
-bool changeView = true;
+bool changeView = false;
 var opacityTrue = 1.0;
 
 class MainPage extends StatefulWidget {
